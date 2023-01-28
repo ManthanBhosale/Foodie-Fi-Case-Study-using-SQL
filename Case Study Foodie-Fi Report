@@ -1,0 +1,137 @@
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CUSTOMER JOURNEY
+
+Foodie-fi has 8 customers
+
+CUSTOMER_ID - 1
+Signed up to foodie-fi on 1st August 2020, after free trial the customer subscribed to a basic monthly plan. 🤗
+
+CUSTOMER_ID - 2
+Signed up to foodie-fi on 20th September 2020 and immediately after the free trial upgraded to a pro annual plan. 🥰😍🤩🥳
+
+CUSTOMER_ID - 11
+Signed up to foodie-fi on 19th November 2020 and churned the plan after the initial free trial. 😢
+
+CUSTOMER_ID - 13
+Signed up to foodie-fi on 15th December 2020, after the free trial subscribed to basic monthly plan and later upgraded to a pro monthly plan in 3 months and 7 days of basic monthly plan.🥰
+
+CUSTOMER_ID - 15
+Signed up to foodie-fi on 17th March 2020, got subscribed to automatic subscription pro monthly plan and churned the plan within 1 month and 5 days. 😔
+
+CUSTOMER_ID - 16
+Signed up to foodie-fi on 31st May 2020, after the free trial customer subscribed to a  basic monthly plan and later upgraded to pro annual plan after 4.5 months. 🥰😍🤩🥳
+
+CUSTOMER_ID - 18
+Signed up to foodie-fi on 22nd June 2020, got subscribed to automatic subscription pro monthly plan. 🤗
+
+CUSTOMER_ID - 19
+Signed up to foodie-fi on 22nd June 2020, got subscribed to automatic subscription pro monthly plan and later upgraded to a pro annual plan in two months. 🥰😍🤩🥳
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DATA ANALYSIS
+
+No.of Customers
+
+->  Foodie-fi has 8 customers
+
+Monthly Distribution of trail plan
+
+->
+  March     3
+  June      3
+  August    3
+  December  2
+  July      2
+  November  2
+  September 2
+  April     1
+  May       1
+  October   1
+  February  0
+  January   0
+  The count of new users joining foodie-fi were high in March, June and August followed by July, September, November and December.
+
+Plan Name and its count of events occurred after 2020 
+  After 2020 1 customer has subscribed to a pro monthly plan.
+
+Customer count and percentage of customers who have churned
+  2 customers have churned the plan which is 25.0% of all customer count.
+
+Number and percentage of customers churned after its initial free trial.
+  Only one customer have churned straight after the initial free trial which is Round Figured to 13% of all
+
+Number and percentage of customers after their initial free trial
+  37.5% of customers subscribed to a basic monthly plan after their initial free trial.
+  37.5% of customers subscribed to a pro monthly plan after their initial free trial.
+  12.5% of customers subscribed to a pro annual plan after their initial free trial.
+  12.5% of customers subscribed to a churn after their initial free trial.
+
+Number of customer and percentage breakdown of all plan values before 2020-12-31	
+  2 customers subscribed to a basic monthly plan which is 25.0% of total customers.
+  1 customer subscribed to a pro monthly plan which is 12.5% of total customers.
+  3 customers subscribed to a pro annual plan which is 37.5% of total customers
+  2 customers churned plans which is 25.0% of total customers
+
+Number of customers upgraded to an annual plan in 2020
+  3 customers have upgraded to an annual plan in 2020
+
+Average days for a customer to annual plan from the day they join foodie-fi and breakdown of average value into a 30 day period.
+  It takes 73 days on average for a customer to subscribe for annual plan from the day they joined foodie-fi
+  OVERALL there are 3 customers with an annual plan, if average days are divided into 30 day periods.
+  1 customer took 1-30 days 
+  1 customer took 61-90 days 
+  1 customer took 121-150 days
+
+Number of customers downgraded from a pro monthly to a basic monthly plan in 2020
+  0 customers downgraded from a pro-monthly to a basic monthly plan in 2020.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Outside The Box Questions
+
+1. How would you calculate the rate of growth for Foodie-Fi?
+  Yearly, Monthly, Quarterly by total of payment amount
+  Example: 
+  Total paymenta amount in Month 1 + Total payment amount in Month 2 / Total payment amount in Month 1 * 100
+
+2. What key metrics would you recommend Foodie-Fi management to 
+  Sales Revenue
+    Annual Revenue
+    Average Revenue Generated Per Customer
+    Revenue by plans
+  Growth Rate 
+    Monthly, Quarterly and Yearly.
+  Churn Rate
+  Customer Lifetime value
+  Customer Loyalty and Retention
+  
+3. What are some key customer journeys or experiences that you would analyze further to improve customer retention?
+
+  No of customers churned
+  When customers are most likely to churn.
+  Prior plan subscribed before churning
+
+4. If the Foodie-Fi team were to create an exit survey shown to customers who wish to cancel their subscription, what questions would you include in the survey?
+  Is foodie-fi too expensive ?
+  Any Technical Issue
+  Are you switching to another platform ?
+  Any issue with video quality ?
+  Other
+
+5. What business levers could the Foodie-Fi team use to reduce the customer churn rate? How would you validate the effectiveness of your ideas?
+  Analyze why churn Occurs
+  Customer exit surveys + Voice of customer feedback through 
+    Call 
+    Email 
+    Website 
+    Live Chat 
+    Social Media
+ Engaging with the customers
+    By providing versatile content about the benefits of foodie-fi, by offering regular news updates, such as announcements of deals, special offers or upcoming upgrades. Engaging with customers on all channels
+      STREAMING PLATFORM
+      EMAIL
+      WEBSITE
+      SOCIAL MEDIA
+      CHAT
+      BLOG
+   Offering Long Term Contract
+      Reminding and Offering a Longer subscription model i.e pro annual plan using all channels.
