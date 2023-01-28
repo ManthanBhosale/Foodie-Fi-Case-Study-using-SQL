@@ -297,22 +297,22 @@ Create a new payments table for the year 2020 that includes amounts paid by ea
 4. once a customer churns they will no longer make payments
 */
 
+CREATE TEMPORARY TABLE new_tbl 
+	SELECT 
+		s.customer_id, 
+		s.plan_id,
+		p.plan_name,
+		s.start_date,
+		p.price, 
+		LEAD(s.plan_id) OVER (PARTITION BY  s.customer_id ORDER BY s.start_date) AS next_id,
+		LEAD(s.start_date) OVER (PARTITION BY s.customer_id ORDER BY s.start_date) AS next_date
+	FROM 
+		subscriptions s 
+	JOIN 
+		plans p ON p.plan_id = s.plan_id 
+	WHERE 
+		s.start_date <'2020-12-31' ORDER BY s.customer_id, s.start_date;
 
-	CREATE TEMPORARY TABLE new_tbl 
-		SELECT 
-			s.customer_id, 
-			s.plan_id,
-			p.plan_name,
-			s.start_date,
-			p.price, 
-			LEAD(s.plan_id) OVER (PARTITION BY  s.customer_id ORDER BY s.start_date) AS next_id,
-			LEAD(s.start_date) OVER (PARTITION BY s.customer_id ORDER BY s.start_date) AS next_date
-		FROM 
-			subscriptions s 
-		JOIN 
-			plans p ON p.plan_id = s.plan_id 
-		WHERE 
-			s.start_date <'2020-12-31' ORDER BY s.customer_id, s.start_date;
 CREATE TABLE payments
 	WITH RECURSIVE dates_cte(customer_id,plan_id,plan_name,payment_date,amount,next_id,next_date) AS (
 		SELECT 
@@ -394,34 +394,35 @@ CREATE TABLE payments
 		UNION
 		SELECT * from temp2
 	),
-payments as (
-	SELECT 
-		customer_id,
-		plan_id,
-		plan_name,
-		payment_date,
-		CASE
-			WHEN 
-				datediff(payment_date,LAG(payment_date) over (PARTITION BY customer_id ORDER BY payment_date)) < 30 
-			THEN 
-				amount-LAG(amount) over (PARTITION BY customer_id ORDER BY payment_date)
-			ELSE 
-				amount
-		END as amount,
-		RANK() OVER (PARTITION BY customer_id ORDER BY payment_date) as payment_order
-		
-	FROM
-		temp3
-	WHERE
-		payment_date <= '2020-12-31'
-	ORDER BY customer_id , payment_date
-    )
-    SELECT 
+	payments as (
+		SELECT 
+			customer_id,
+			plan_id,
+			plan_name,
+			payment_date,
+			CASE
+				WHEN 
+					datediff(payment_date,LAG(payment_date) over (PARTITION BY customer_id ORDER BY payment_date)) < 30 
+				THEN 
+					amount-LAG(amount) over (PARTITION BY customer_id ORDER BY payment_date)
+				ELSE 
+					amount
+			END as amount,
+			RANK() OVER (PARTITION BY customer_id ORDER BY payment_date) as payment_order
+		FROM
+			temp3
+		WHERE
+			payment_date <= '2020-12-31'
+		ORDER BY 
+			customer_id , payment_date
+    	)
+    	SELECT 
 		* 
 	FROM 
 		payments;
-    
+
+-- Display the created payments table
 SELECT 
-    *
+	*
 FROM
-    payments;
+	payments;
