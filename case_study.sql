@@ -109,7 +109,7 @@ ORDER BY plan_id;
 
 -- *******************************************************************************************************************
 
--- 4. What is the customer count and percentage of customers who have churned the rounded to 1 decimal place?
+-- 4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 SELECT 
 	count(customer_id) as 'No of Customers Churned', 
     concat(round(count(customer_id)*100/(select count(distinct(customer_id)) from subscriptions),1),'%') as 'Percent of Customers Churned' 
@@ -138,56 +138,51 @@ plan_id = 4 AND prev_plan = 0;
 -- 6. What is the number and percentage of customer plans after their initial free trial?
 WITH cte AS (
 				SELECT 
-					*, LEAD(plan_id,1) OVER (PARTITION BY customer_id ORDER BY plan_id) AS next_plan 
+					s.plan_id,LEAD(p.plan_name,1) OVER (PARTITION BY s.customer_id ORDER BY s.plan_id) AS next_plan 
 				FROM 
-					subscriptions
+					subscriptions s join plans p on p.plan_id = s.plan_id 
 			)
 SELECT 
-next_plan AS plan_id, Count(*) AS 'Number of customers',
-concat(round(count(*) * 100/(SELECT 
-						COUNT(DISTINCT customer_id) 
-                        FROM 
-                        subscriptions),1),'%') AS 'Percentage of customers' 
-FROM 
-	cte 
-WHERE 
-	plan_id = 0 AND next_plan IS NOT NULL 
-GROUP BY next_plan 
-ORDER BY next_plan;
-
+    next_plan,
+    COUNT(*) AS 'Number of customers',
+    CONCAT(ROUND(COUNT(*) * 100 / (SELECT 
+                            COUNT(DISTINCT customer_id)
+                        FROM
+                            subscriptions),
+                    1),
+            '%') AS 'Percentage of customers'
+FROM
+    cte
+WHERE
+    plan_id = 0
+GROUP BY next_plan
+ORDER BY COUNT(*) DESC;
 -- ************************************************************************************************************************
 
 -- 7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020–12–31?
-WITH cte_next_date AS(
-						SELECT 
-							*, LEAD(start_date,1) OVER (PARTITION BY customer_id ORDER BY start_date) AS next_date 
-						FROM 
-							subscriptions 
-						WHERE 
-							start_date <= '2020-12-31'
-					 ), 
-plans_breakdown AS(
-					SELECT 
-						plan_id, count(DISTINCT customer_id) AS num_customer 
-					FROM 
-						cte_next_date 
-					WHERE 
-						next_date IS NOT NULL AND start_date <'2020-12-31' AND next_date > '2020-12-31' 
-                        OR 
-                        next_date IS NULL AND start_date < '2020-12-31'
-					GROUP BY plan_id
-				  )
+WITH cte AS (
 SELECT 
-	plan_id as 'Plan ID',num_customer AS 'Number of customers', concat(round(num_customer*100/(
-													SELECT 
-														COUNT(DISTINCT customer_id) 
-													FROM 
-														subscriptions),1),'%') AS 'Percentage of customers' 
-FROM 
-	plans_breakdown 
-    GROUP BY plan_id, num_customer 
-    ORDER BY plan_id;
+    p.plan_name, COUNT(s.customer_id) AS cnt
+FROM
+    subscriptions s
+        JOIN
+    plans p ON s.plan_id = p.plan_id
+WHERE
+    s.start_date < '2020-12-31'
+GROUP BY p.plan_name)
 
+SELECT 
+    plan_name,
+    cnt AS 'Number of customers',
+    CONCAT(ROUND(cnt * 100 / (SELECT 
+                            COUNT(DISTINCT customer_id)
+                        FROM
+                            subscriptions),
+                    1),
+            '%') AS 'Percentage'
+FROM
+    cte
+;
 -- ************************************************************************************************************************
 
 -- 8. How many customers have upgraded to an annual in 2020? 
@@ -271,12 +266,12 @@ ORDER BY bins;
 -- 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 WITH next_plan AS (
 					SELECT 
-						*, LEAD(plan_id,1) OVER (PARTITION BY customer_id ORDER BY start_date,plan_id) AS plan 
+						*, LEAD(plan_id,1) OVER (PARTITION BY customer_id ORDER BY start_date,plan_id) AS next_plan 
 					FROM 
 						subscriptions
 				   )
-SELECT 
-	count(DISTINCT customer_id) AS 'Number of customers downgraded' 
+SELECT
+	count(*) as 'Number of customers downgraded from pro monthly to basic monthly'
 FROM 
 	next_plan np 
 LEFT JOIN 
@@ -284,7 +279,14 @@ LEFT JOIN
 ON 
 	p.plan_id = np.plan_id
 WHERE 
-	p.plan_name = 'pro_monthly' AND np.plan = 1 AND start_date <= '2020-12-31';
+	(
+		(np.plan_id = 0 AND np.next_plan = 1) 
+			OR
+		(np.plan_id = 2 AND np.next_plan = 1)
+    ) 
+		AND 
+	start_date <= '2020-12-31'
+;
 
 -- ************************************************************************************************************************
 -- C. Challenge Payment Question
@@ -416,7 +418,7 @@ CREATE TABLE payments
 		ORDER BY 
 			customer_id , payment_date
     	)
-    	SELECT 
+	SELECT 
 		* 
 	FROM 
 		payments;
