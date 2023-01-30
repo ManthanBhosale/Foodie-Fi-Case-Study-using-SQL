@@ -66,7 +66,7 @@ INSERT INTO subscriptions VALUES
 -- A. Customers Journey
 -- ************************************************************************************************************************
 SELECT 
-    s.customer_id, s.plan_id ,p.plan_name, s.start_date
+    s.customer_id, s.plan_id ,p.plan_name, s.start_date,datediff(start_date,lag(start_date) over(partition by customer_id order by start_date)) as days_diff
 FROM
     subscriptions s
         JOIN
@@ -87,7 +87,7 @@ FROM
 -- 2. What is the monthly distribution of trial plan start_date values for our dataset — use the start of the month as the GROUP BY value
 SELECT 
     DATE_FORMAT(start_date,'%M') AS Months,
-    COUNT(customer_id) 'No of Customers'
+    COUNT(customer_id) AS No_of_Customers
 FROM
     subscriptions
 GROUP BY Months
@@ -97,7 +97,7 @@ ORDER BY COUNT(customer_id) desc;
 
 -- 3. What plan ‘start_date’ values occur after the year 2020 for our dataset? Show the breakdown by count of events for each 'plan_name'
 SELECT 
-    p.plan_name, p.plan_id, COUNT(*) AS 'Cnt of events'
+    p.plan_name, p.plan_id, COUNT(*) AS Cnt_of_events
 FROM
     subscriptions s
         JOIN
@@ -111,8 +111,8 @@ ORDER BY plan_id;
 
 -- 4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 SELECT 
-	count(customer_id) as 'No of Customers Churned', 
-    concat(round(count(customer_id)*100/(select count(distinct(customer_id)) from subscriptions),1),'%') as 'Percent of Customers Churned' 
+	count(customer_id) as Customers_Churned, 
+    concat(round(count(customer_id)*100/(select count(distinct(customer_id)) from subscriptions),1),'%') as Percentage 
 FROM 
     subscriptions 
 WHERE
@@ -144,13 +144,13 @@ WITH cte AS (
 			)
 SELECT 
     next_plan,
-    COUNT(*) AS 'Number of customers',
+    COUNT(*) AS Number_of_customers,
     CONCAT(ROUND(COUNT(*) * 100 / (SELECT 
                             COUNT(DISTINCT customer_id)
                         FROM
                             subscriptions),
                     1),
-            '%') AS 'Percentage of customers'
+            '%') AS Percentage
 FROM
     cte
 WHERE
@@ -169,25 +169,27 @@ FROM
     plans p ON s.plan_id = p.plan_id
 WHERE
     s.start_date < '2020-12-31'
-GROUP BY p.plan_name)
-
+GROUP BY p.plan_name),
+result as (
 SELECT 
     plan_name,
-    cnt AS 'Number of customers',
+    cnt AS customer_count,
     CONCAT(ROUND(cnt * 100 / (SELECT 
                             COUNT(DISTINCT customer_id)
                         FROM
                             subscriptions),
                     1),
-            '%') AS 'Percentage'
+            '%') AS Percentage
 FROM
     cte
+)
+select result.* from result join plans p on p.plan_name = result.plan_name order by p.plan_id;
 ;
 -- ************************************************************************************************************************
 
--- 8. How many customers have upgraded to an annual in 2020? 
+-- 8. How many customers have upgraded to an annual plan in 2020? 
 SELECT 
-	count(customer_id) AS 'Number of customers' 
+	count(customer_id) AS Number_of_customers 
 FROM 
 	subscriptions 
 WHERE 
@@ -211,7 +213,7 @@ trail_plan as (
                             plan_id = 0
 			  )
 SELECT
- round(avg(datediff(annual_date, trail_date)),0) AS 'Average days' 
+ round(avg(datediff(annual_date, trail_date)),0) AS average_days 
 FROM 
 	annual_plan ap 
 JOIN 
@@ -255,7 +257,7 @@ day_count AS (
 					date_diff
 			 )
 SELECT 
-	concat((bins *30)+1,'-',(bins+1)*30,'days') AS Days, count(days_diff) AS 'Total number of customers' 
+	concat((bins *30)+1,'-',(bins+1)*30) AS Days, count(days_diff) AS Total_number_of_customers 
 FROM 
 	day_count 
 GROUP BY bins 
